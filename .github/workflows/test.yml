@@ -1,0 +1,40 @@
+name: Python Test
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      
+      - name: Install dependencies
+        run: |
+          pip install impacket ldap3 dnspython
+          echo "✅ Dependencies installed"
+      
+      - name: Check Python syntax
+        run: |
+          python -m py_compile ad_enumeration.py
+          python -m py_compile kerberoasting.py
+          echo "✅ Python syntax check passed"
+      
+      - name: Test Python imports
+        run: |
+          python -c "import ad_enumeration; print('✅ AD Enumeration OK')"
+          python -c "import kerberoasting; print('✅ Kerberoasting OK')"
+      
+      - name: Check PowerShell files
+        run: |
+          echo "✅ PowerShell files present:"
+          ls scripts/*.ps1
+      
+      - name: All tests passed
+        run: echo "✅✅✅ ACTIVE DIRECTORY LAB READY! ✅✅✅"
